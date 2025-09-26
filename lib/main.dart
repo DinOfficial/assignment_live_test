@@ -11,62 +11,20 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ContactList(),
+      home: ContactListUI(),
     );
   }
 }
 
-class ContactList extends StatefulWidget {
-  @override
-  _ContactListState createState() => _ContactListState();
-}
-
-class _ContactListState extends State<ContactList> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _numberController = TextEditingController();
-
-  List<Map<String, String>> contacts = [];
-
-  void _addContact() {
-    String name = _nameController.text.trim();
-    String number = _numberController.text.trim();
-
-    if (name.isNotEmpty && number.isNotEmpty) {
-      setState(() {
-        contacts.add({"name": name, "number": number});
-      });
-
-      _nameController.clear();
-      _numberController.clear();
-    }
-  }
-
-  void _deleteContact(int index) {
-    showDialog(
-      context: context,
-      builder: (ctx) {
-        return AlertDialog(
-          title: const Text("Confirmation"),
-          content: const Text("Are you sure for Delete?"),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.cancel, color: Colors.red),
-              onPressed: () => Navigator.pop(ctx),
-            ),
-            IconButton(
-              icon: const Icon(Icons.delete, color: Colors.blue),
-              onPressed: () {
-                setState(() {
-                  contacts.removeAt(index);
-                });
-                Navigator.pop(ctx);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+class ContactListUI extends StatelessWidget {
+  final List<Map<String, String>> dummyContacts = [
+    {"name": "Jawad", "number": "01877-777777"},
+    {"name": "Ferdous", "number": "01677-777777"},
+    {"name": "Hasan", "number": "01745-777777"},
+    {"name": "Hasan", "number": "01745-777777"},
+    {"name": "Hasan", "number": "01745-777777"},
+    {"name": "Hasan", "number": "01745-777777"},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -74,17 +32,16 @@ class _ContactListState extends State<ContactList> {
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         title: const Text("Contact List"),
-        backgroundColor: Colors.blueGrey,
         centerTitle: true,
+        backgroundColor: Colors.blueGrey,
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(12.0),
             child: Column(
               children: [
                 TextField(
-                  controller: _nameController,
                   decoration: const InputDecoration(
                     labelText: "Name",
                     border: OutlineInputBorder(),
@@ -92,8 +49,6 @@ class _ContactListState extends State<ContactList> {
                 ),
                 const SizedBox(height: 10),
                 TextField(
-                  controller: _numberController,
-                  keyboardType: TextInputType.phone,
                   decoration: const InputDecoration(
                     labelText: "Number",
                     border: OutlineInputBorder(),
@@ -105,7 +60,7 @@ class _ContactListState extends State<ContactList> {
                     backgroundColor: Colors.blueGrey,
                     minimumSize: const Size(double.infinity, 45),
                   ),
-                  onPressed: _addContact,
+                  onPressed: () {},
                   child: const Text("Add"),
                 ),
               ],
@@ -113,17 +68,22 @@ class _ContactListState extends State<ContactList> {
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: contacts.length,
+              itemCount: dummyContacts.length,
               itemBuilder: (context, index) {
-                return ListTile(
-                  leading: const Icon(Icons.person),
-                  title: Text(
-                    contacts[index]['name']!,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                return Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  child: ListTile(
+                    leading: const Icon(Icons.person),
+                    title: Text(
+                      dummyContacts[index]['name']!,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                      ),
+                    ),
+                    subtitle: Text(dummyContacts[index]['number']!),
+                    trailing: const Icon(Icons.phone, color: Colors.blue),
                   ),
-                  subtitle: Text(contacts[index]['number']!),
-                  trailing: const Icon(Icons.phone, color: Colors.blue),
-                  onLongPress: () => _deleteContact(index),
                 );
               },
             ),
